@@ -13,7 +13,7 @@ export async function postFileController(req: Request, res: Response): Promise<R
     return res.status(200).json({message: "Success"})
 }
 
-export async function getLinkOfFileByNameController(req: Request, res: Response) {
+export async function getLinkOfFileByNameController(req: Request, res: Response): Promise<Response> {
     const fileName: string = req.headers.file_name as string;
 
     const url: string = await getLinkOfFileByName(fileName)
