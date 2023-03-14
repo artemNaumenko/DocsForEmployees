@@ -3,9 +3,7 @@ const jws = require("jsonwebtoken");
 
 export function isAuthorized(req: Request, res: Response, next: Function) {
     try{
-        console.log("auth check")
         const token = req.headers.authorization?.split(" ")[1];
-        console.log(token)
         if(!token){
             res.status(401).json({message:"You are unauthorized."})
         }
