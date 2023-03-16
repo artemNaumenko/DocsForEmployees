@@ -11,10 +11,25 @@ export async function loginController(req: Request, res: Response){
 
         if(!result){
             return res.status(500).json({message: "Access denied."})
-        } else {
+        }
+
+        if(result.role_name === "USER"){
             const token: string = generateToken(result.phone_number, result.role_name)
             return res.status(201).json({token: token})
         }
+
+        const password: string = req.body.password as string
+
+        if(password == null){ // for ADMIN role
+            return res.status(301).json({message: "Missing password"})
+        }
+
+        if(password === result.password){
+            const token: string = generateToken(result.phone_number, result.role_name)
+            return res.status(201).json({token: token})
+        }
+
+        return res.status(500).json({message: "Access denied."})
     } catch (e) {
         return res.status(504).json({e})
     }

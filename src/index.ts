@@ -13,7 +13,15 @@ const startServer = async  () => {
     try {
 
         //connect to DB
-        const cn = JSON.parse(process.env.POSTGRE_SQL_CONFIGURATION as string)
+        // const cn = JSON.parse(process.env.POSTGRE_SQL_CONFIGURATION as string)
+
+        const cn = {
+            "user":"postgres",
+            "host":"localhost",
+            "password":"admin",
+            "database":"postgres",
+            "port":5432
+        }
 
         db = new Client(cn);
         await db.connect();
