@@ -1,9 +1,19 @@
 import {Router} from "express"
-import {getLinkOfFileByNameController, postFileController} from "../controllers/fileController";
+import {
+    addPermissionToFileController, getAllAvailableFilesController,
+    getLinkOfFileByNameController, markAsReadController,
+    postFileController
+} from "../controllers/fileController";
 import bodyParser from "body-parser";
+import {isAuthorized} from "../middlewares/isAuthotized";
+import {hasRole} from "../middlewares/hasRole";
 
 export const router: Router = Router();
 const byteParser = bodyParser.raw({ limit: '50mb'})
 
-router.post("/postFile", byteParser, postFileController)
-router.get("/getFile", getLinkOfFileByNameController)
+router.post("/postFile", byteParser, isAuthorized, hasRole("ADMIN"), postFileController)
+router.get("/getLinkOfFile", isAuthorized, getLinkOfFileByNameController)
+router.get("/getAllAvailableFiles", isAuthorized, getAllAvailableFilesController)
+
+router.post("/addAccess", isAuthorized, hasRole("ADMIN"), addPermissionToFileController)
+router.patch("/markAsRead", isAuthorized, markAsReadController)

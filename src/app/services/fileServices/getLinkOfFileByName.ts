@@ -6,7 +6,7 @@ export async function getLinkOfFileByName(fileName:string): Promise<string> {
     const file = admin.storage().bucket(bucketName).file(fileName);
     const [url] = await file.getSignedUrl({
         action: 'read',
-        expires: '03-17-2023' // expiration date in MM-DD-YYYY format
+        expires: new Date(Date.now() + 3600000) // URL will expire in 1 hour
     });
 
     return url;

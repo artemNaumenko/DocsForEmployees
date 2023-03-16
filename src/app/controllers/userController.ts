@@ -11,13 +11,12 @@ export async function loginController(req: Request, res: Response){
 
         if(!result){
             return res.status(500).json({message: "Access denied."})
+        } else {
+            const token: string = generateToken(result.phone_number, result.role_name)
+            return res.status(201).json({token: token})
         }
-
-        const token:string = generateToken(result.phone_number, result.role_name)
-
-        return res.status(201).json({token: token})
     } catch (e) {
-        return res.status(500).json({message: "Access denied."})
+        return res.status(504).json({e})
     }
 }
 
@@ -30,9 +29,9 @@ export async function addUserController(req: Request, res: Response) {
         const result = await addNewUser(phoneNumber, role, name)
         if(!result){
             return res.status(422).json({message: "User already exist."})
+        } else {
+            return res.status(201).json({message: "Success"})
         }
-
-        return res.status(201).json({message: "Success"})
     } catch (e) {
         return res.status(405).json({message: "Error"})
     }
