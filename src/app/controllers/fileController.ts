@@ -5,6 +5,7 @@ import {addNewFileToDB} from "../services/fileServices/addNewFileToDB";
 import {addPermissionToFile} from "../services/fileServices/addPermissionToFile";
 import {getAllAvailableFiles} from "../services/fileServices/getAllAvailableFiles";
 import {markAsReadService} from "../services/fileServices/markAsReadService";
+import {getAllFiles} from "../services/fileServices/getAllFiles";
 
 export async function postFileController(req: Request, res: Response): Promise<Response>{
     try {
@@ -56,6 +57,16 @@ export async function getAllAvailableFilesController(req: Request, res: Response
         const hasAlreadyBeenRead:boolean = JSON.parse(req.headers.has_already_been_read as string)
 
         const result = await getAllAvailableFiles(phoneNumber,hasAlreadyBeenRead)
+
+        return res.status(200).json(result)
+    } catch (e) {
+        return res.status(405).json({error: e})
+    }
+}
+
+export async function getAllFilesController(req: Request, res: Response) {
+    try{
+        const result = await getAllFiles()
 
         return res.status(200).json(result)
     } catch (e) {

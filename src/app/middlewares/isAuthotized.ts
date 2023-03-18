@@ -9,7 +9,7 @@ export function isAuthorized(req: Request, res: Response, next: Function) {
 
         const token = req.headers.authorization?.split(" ")[1];
         if(!token){
-            res.status(401).json({message:"You are unauthorized."})
+            return res.status(401).json({message:"You are unauthorized."})
         }
 
         const secret: string = process.env.TOKEN_GENERATION_SECRET_KEY as string

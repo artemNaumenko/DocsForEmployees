@@ -1,8 +1,11 @@
 import {Request, Response} from "express";
 import {getUserWithRoleByPhone} from "../services/userServices/getUserWithRoleByPhone";
 import {generateToken} from "../services/generateToken";
-import {getAllUsers} from "../services/userServices/getAllUsers";
+import {getAllUsersExceptMe} from "../services/userServices/getAllUsersExceptMe";
 import {addNewUser} from "../services/userServices/addNewUser";
+import {checkIfUserExists} from "../services/userServices/checkIfUserExists";
+import {getUsersHaveAccessToFile} from "../services/userServices/getUsersHaveAccessToFile";
+import {getUsersDoNotHaveAccessToFile} from "../services/userServices/getUsersDoNotHaveAccessToFile";
 
 export async function loginController(req: Request, res: Response){
     try {
@@ -48,13 +51,54 @@ export async function addUserController(req: Request, res: Response) {
             return res.status(201).json({message: "Success"})
         }
     } catch (e) {
+        console.log(e)
         return res.status(405).json({message: "Error"})
     }
 }
 
-export async function getAllUsersController(req: Request, res: Response){
+export async function getAllUsersExceptMeController(req: Request, res: Response){
     try {
-        const users = await getAllUsers()
+        // @ts-ignore
+        const phoneNumber:string = req.decodedPayload.phoneNumber
+
+        const users = await getAllUsersExceptMe(phoneNumber)
+
+        return res.status(201).json(users)
+    } catch (e) {
+        return res.status(503).json({error: e})
+    }
+}
+
+export async function checkIfUserExistController(req: Request, res: Response){
+    try {
+        const phone: string = req.headers.phone_number as string
+        const doesUserExist: boolean = await checkIfUserExists(phone)
+
+        if(doesUserExist){
+            return res.status(200).json({message:"Exist"})
+        } else {
+            return res.status(201).json({message:"Does not exist"})
+        }
+    } catch (e) {
+        return res.status(503).json({error: e})
+    }
+}
+
+export async function getUsersHaveAccessToFileController(req: Request, res: Response) {
+    try {
+        const fileId:string = req.headers.file_id as string
+        const users = await getUsersHaveAccessToFile(fileId);
+
+        return res.status(201).json(users)
+    } catch (e) {
+        return res.status(503).json({error: e})
+    }
+}
+
+export async function getUsersDoNotHaveAccessToFileController(req: Request, res: Response) {
+    try {
+        const fileId:string = req.headers.file_id as string
+        const users = await getUsersDoNotHaveAccessToFile(fileId);
 
         return res.status(201).json(users)
     } catch (e) {
