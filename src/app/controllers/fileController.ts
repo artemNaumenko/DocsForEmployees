@@ -7,8 +7,9 @@ import {getAllAvailableFiles} from "../services/fileServices/getAllAvailableFile
 import {markAsReadService} from "../services/fileServices/markAsReadService";
 import {getAllFiles} from "../services/fileServices/getAllFiles";
 import {deleteFile} from "../services/fileServices/deleteFile";
-import {getFilesUserHaveAccess} from "../services/userServices/getFilesUserHaveAccess";
+import {getFilesUserHasAccess} from "../services/userServices/getFilesUserHasAccess";
 import {addLinksToFiles} from "../services/userServices/addLinksToFiles";
+import {getFilesUserDoesNotHaveAccess} from "../services/userServices/getFilesUserDoesNotHaveAccess";
 
 export async function postFileController(req: Request, res: Response): Promise<Response>{
     try {
@@ -101,13 +102,24 @@ export async function deleteFideController(req: Request, res: Response) {
     }
 }
 
-export async function getFilesUserHaveAccessController(req: Request, res: Response) {
+export async function getFilesUserHasAccessController(req: Request, res: Response) {
     try {
         const userId: string = req.headers.user_id as string
-        const files = await getFilesUserHaveAccess(userId)
+        const files = await getFilesUserHasAccess(userId)
         const filesWithLinks = await addLinksToFiles(files)
 
         return res.status(201).json(filesWithLinks)
+    } catch (e) {
+        return res.status(503).json({error: e})
+    }
+}
+
+export async function getFilesUserDoesNotHaveAccessController(req: Request, res: Response) {
+    try {
+        const userId: string = req.headers.user_id as string
+        const files = await getFilesUserDoesNotHaveAccess(userId)
+
+        return res.status(201).json(files)
     } catch (e) {
         return res.status(503).json({error: e})
     }
