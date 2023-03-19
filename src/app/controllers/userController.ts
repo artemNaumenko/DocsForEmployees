@@ -6,6 +6,8 @@ import {addNewUser} from "../services/userServices/addNewUser";
 import {checkIfUserExists} from "../services/userServices/checkIfUserExists";
 import {getUsersHaveAccessToFile} from "../services/userServices/getUsersHaveAccessToFile";
 import {getUsersDoNotHaveAccessToFile} from "../services/userServices/getUsersDoNotHaveAccessToFile";
+import {revokeAccessToFile} from "../services/userServices/revokeAccessToFile";
+import {deleteUser} from "../services/fileServices/deleteUser";
 
 export async function loginController(req: Request, res: Response){
     try {
@@ -101,6 +103,28 @@ export async function getUsersDoNotHaveAccessToFileController(req: Request, res:
         const users = await getUsersDoNotHaveAccessToFile(fileId);
 
         return res.status(201).json(users)
+    } catch (e) {
+        return res.status(503).json({error: e})
+    }
+}
+
+export async function revokeAccessToFileController(req: Request, res: Response) {
+    try {
+        const fileId:string = req.headers.file_id as string
+        const userId:string = req.headers.user_id as string
+
+        await revokeAccessToFile(userId, fileId)
+        return res.status(201).json({message: "Access revoke"})
+    } catch (e) {
+        return res.status(503).json({error: e})
+    }
+}
+
+export async function deleteUserController(req: Request, res: Response) {
+    try {
+        const userId:string = req.headers.user_id as string
+        await deleteUser(userId)
+        return res.status(201).json({message: "User deleted"})
     } catch (e) {
         return res.status(503).json({error: e})
     }

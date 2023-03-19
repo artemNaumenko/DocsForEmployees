@@ -2,7 +2,7 @@ import {db} from "../../../index";
 
 export async function getAllFiles() {
     const sql: string = `SELECT * FROM documents
-                         ORDER BY file_name DESC;`
+                         ORDER BY created_at DESC;`
 
     const result = await db.query(sql)
 

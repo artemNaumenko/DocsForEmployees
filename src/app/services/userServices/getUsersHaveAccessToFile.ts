@@ -1,7 +1,7 @@
 import {db} from "../../../index";
 
 export async function getUsersHaveAccessToFile(fileId: string) {
-    const sql = `SELECT u.id, u.name, u.phone_number, r.role_name
+    const sql = `SELECT u.id, u.name, u.phone_number, r.role_name, du.has_already_read
                  FROM users u
                  INNER JOIN documents_users du ON u.id = du.user_id
                  INNER JOIN roles_users ru ON u.id = ru.user_id

@@ -6,6 +6,9 @@ import {addPermissionToFile} from "../services/fileServices/addPermissionToFile"
 import {getAllAvailableFiles} from "../services/fileServices/getAllAvailableFiles";
 import {markAsReadService} from "../services/fileServices/markAsReadService";
 import {getAllFiles} from "../services/fileServices/getAllFiles";
+import {deleteFile} from "../services/fileServices/deleteFile";
+import {getFilesUserHaveAccess} from "../services/userServices/getFilesUserHaveAccess";
+import {addLinksToFiles} from "../services/userServices/addLinksToFiles";
 
 export async function postFileController(req: Request, res: Response): Promise<Response>{
     try {
@@ -85,5 +88,27 @@ export async function markAsReadController(req: Request, res: Response){
         return res.status(202).json({message: "Success."});
     } catch (e) {
         return res.status(500).json({error: e})
+    }
+}
+
+export async function deleteFideController(req: Request, res: Response) {
+    try {
+        const fileId: string = req.headers.file_id as string
+        await deleteFile(fileId)
+        return res.status(201).json({message: "File deleted"})
+    } catch (e) {
+        return res.status(503).json({error: e})
+    }
+}
+
+export async function getFilesUserHaveAccessController(req: Request, res: Response) {
+    try {
+        const userId: string = req.headers.user_id as string
+        const files = await getFilesUserHaveAccess(userId)
+        const filesWithLinks = await addLinksToFiles(files)
+
+        return res.status(201).json(filesWithLinks)
+    } catch (e) {
+        return res.status(503).json({error: e})
     }
 }

@@ -1,9 +1,9 @@
 import {Router} from "express"
 import {
     addUserController,
-    checkIfUserExistController,
+    checkIfUserExistController, deleteUserController,
     getAllUsersExceptMeController, getUsersDoNotHaveAccessToFileController, getUsersHaveAccessToFileController,
-    loginController
+    loginController, revokeAccessToFileController
 } from "../controllers/userController";
 import {isAuthorized} from "../middlewares/isAuthotized";
 import {hasRole} from "../middlewares/hasRole"
@@ -18,4 +18,8 @@ router.get("/checkIfUserExists", isAuthorized, hasRole("ADMIN"), checkIfUserExis
 
 router.get("/getUsersHaveAccessToFile", isAuthorized, hasRole("ADMIN"), getUsersHaveAccessToFileController)
 router.get("/getUsersDoNotHaveAccessToFile", isAuthorized, hasRole("ADMIN"), getUsersDoNotHaveAccessToFileController)
+
+router.delete("/revokeAccessToFile", isAuthorized, hasRole("ADMIN"), revokeAccessToFileController)
+
+router.delete("/deleteUser", isAuthorized, hasRole("ADMIN"), deleteUserController)
 
